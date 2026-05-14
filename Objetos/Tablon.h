@@ -17,7 +17,8 @@ public:
     int getTiempoDeSupervivencia();
     int getTiempoDeRegado();
     int getPrioridad();
-    int getTiempoDeRiegoPerfeto();
+    int getTiempoDeRiegoPerfecto();
+    int calcularCosto(int);
 };
 
 #endif 

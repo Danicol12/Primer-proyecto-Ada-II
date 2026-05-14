@@ -21,6 +21,20 @@ int Tablon::getPrioridad() {
     return this->prioridad;
 }
 
-int Tablon::getTiempoDeRiegoPerfeto() {
+int Tablon::getTiempoDeRiegoPerfecto() {
     return this->tiempo_de_Riego_Perfecto;
+}
+int Tablon::calcularCosto(int tiempo){
+    int costo=0;
+    if(getTiempoDeRiegoPerfecto()==tiempo){
+        costo = getTiempoDeSupervivencia()-(tiempo+getTiempoDeRegado());
+    }
+    else if((getTiempoDeSupervivencia()-getTiempoDeRegado())>=tiempo){
+        costo = 2*(getTiempoDeSupervivencia()-(tiempo+getTiempoDeRegado()));
+    }
+    else{
+        costo = 2*getPrioridad()*((tiempo+getTiempoDeRegado())-getTiempoDeSupervivencia());
+    }
+    return costo;
+
 }

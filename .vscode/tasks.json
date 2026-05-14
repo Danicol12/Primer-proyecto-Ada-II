@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0", // <--- AGREGA ESTA LÍNEA
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Compilar Todo el Proyecto",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+    "-fdiagnostics-color=always",
+    "-g",
+    "${fileDirname}/*.cpp",         // Compila main.cpp
+    "${fileDirname}/Objetos/*.cpp", // Compila Tablon.cpp que está adentro
+    "-o",
+    "${fileDirname}/${fileBasenameNoExtension}.exe"
+],
+            "options": {
+                "cwd": "C:\\msys64\\ucrt64\\bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Tarea para compilar múltiples archivos cpp"
+        }
+    ]
+}
