@@ -35,6 +35,23 @@ explorarRutas(std::vector<Tablon> finca, std::vector<bool> regado, int tiempoAct
     }
 }
 
+int fuerzaBruta (std::vector<Tablon> miFinca){
+    cout << "--- Iniciando prueba de Fuerza Bruta (roFB) ---" << endl;
+    cout << "Numero de tablones a procesar: " << miFinca.numeroDeTablones() << endl;
+
+    // 3. Ejecutamos el algoritmo de Fuerza Bruta
+    pair<vector<int>, double> resultado = miFinca.roFB();
+
+    // 4. Mostramos los resultados
+    cout << "\nRESULTADO OPTIMO ENCONTRADO:" << endl;
+    cout << "Costo Minimo (CR): " << resultado.second << endl;
+
+    cout << "Programacion Optima (Pi): < ";
+    for (int i = 0; i < resultado.first.size(); i++) {
+        cout << resultado.first[i] << (i == resultado.first.size() - 1 ? "" : ", ");
+    }
+    cout << " >" << endl;
+}
 
 
 int main(){
