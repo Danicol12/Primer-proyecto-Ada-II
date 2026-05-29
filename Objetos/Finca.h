@@ -8,7 +8,10 @@ using namespace std;
 
 class Finca {
 private:
-    vector<Tablon> tablones; // Aquí se guardan todos los tablones
+    vector<Tablon> tablones;
+
+    int tiempoDesdeMascara(int mask);
+    double resolverPD(int mask, int n, vector<double>& dp, vector<int>& choice);
 
 public:
     Finca(vector<Tablon> tablones); 
@@ -20,6 +23,7 @@ public:
     pair<vector<int>, double> roFB(); 
     pair<vector<int>, double> roV();  
     pair<vector<int>, double> roPD();
+    pair<vector<int>, double> roD();
     
     int numeroDeTablones();
     

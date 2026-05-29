@@ -1,4 +1,5 @@
 #include "Finca.h"
+#include <algorithm>
 
 
 Finca::Finca(vector<Tablon> tablones) {
@@ -69,6 +70,63 @@ pair<vector<int>, double> Finca::roFB(){
 }
 
 pair<vector<int>, double> Finca::roV(){
+    // Por implementar — versión voraz
+    return {{}, 0};
+}
 
-    
+int Finca::tiempoDesdeMascara(int mask) {
+    int tiempo = 0;
+    for (size_t i = 0; i < tablones.size(); i++) {
+        if (mask & (1 << i)) {
+            tiempo += tablones[i].getTiempoDeRegado();
+        }
+    }
+    return tiempo;
+}
+
+double Finca::resolverPD(int mask, int n, vector<double>& dp, vector<int>& choice) {
+    if (mask == (1 << n) - 1) return 0;
+    if (dp[mask] != -1) return dp[mask];
+
+    int tiempo_actual = tiempoDesdeMascara(mask);
+    double minCosto = 1e18;
+    int mejorIndice = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (!(mask & (1 << i))) {
+            double costo = tablones[i].calcularCosto(tiempo_actual)
+                         + resolverPD(mask | (1 << i), n, dp, choice);
+            if (costo < minCosto) {
+                minCosto = costo;
+                mejorIndice = i;
+            }
+        }
+    }
+
+    choice[mask] = mejorIndice;
+    return dp[mask] = minCosto;
+}
+
+pair<vector<int>, double> Finca::roPD() {
+    int n = numeroDeTablones();
+    if (n == 0) return {{}, 0};
+
+    vector<double> dp(1 << n, -1);
+    vector<int> choice(1 << n, -1);
+
+    double costoMinimo = resolverPD(0, n, dp, choice);
+
+    vector<int> permutacion;
+    int mask = 0;
+    for (int paso = 0; paso < n; paso++) {
+        int indice = choice[mask];
+        permutacion.push_back(indice);
+        mask |= (1 << indice);
+    }
+
+    return {permutacion, costoMinimo};
+}
+
+pair<vector<int>, double> Finca::roD() {
+    return roPD();
 }

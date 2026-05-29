@@ -9,6 +9,22 @@ Tablon::Tablon(int tiempo_de_Supervivencia, int tiempo_de_Regado, int prioridad,
     this->tiempo_de_Riego_Perfecto = tiempo_de_Riego_Perfecto;
 }
 
+void Tablon::setTiempoDeSupervivcencia(int tiempo_de_Supervivencia) {
+    this->tiempo_de_Supervivencia = tiempo_de_Supervivencia;
+}
+
+void Tablon::setTiempoDeRegado(int tiempo_de_Regado) {
+    this->tiempo_de_Regado = tiempo_de_Regado;
+}
+
+void Tablon::setPrioridad(int prioridad) {
+    this->prioridad = prioridad;
+}
+
+void Tablon::setTiempoDeRiegoPerfecto(int tiempo_de_Riego_Perfecto) {
+    this->tiempo_de_Riego_Perfecto = tiempo_de_Riego_Perfecto;
+}
+
 int Tablon::getTiempoDeSupervivencia() {
     return this->tiempo_de_Supervivencia;
 }
