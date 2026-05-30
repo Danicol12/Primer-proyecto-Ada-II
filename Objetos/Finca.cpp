@@ -67,8 +67,8 @@ pair<vector<int>, double> Finca::roFB(){
 
     return {mejorPermutacion, mejorCosto};
 }
-
+/*
 pair<vector<int>, double> Finca::roV(){
 
     
-}
+}*/

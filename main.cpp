@@ -17,6 +17,7 @@ int main() {
     // 2. Inicializamos la Finca con estos tablones
     Finca miFinca(listaTablones);
 
+    cout << "Holaaaa"<< endl;
     cout << "--- Iniciando prueba de Fuerza Bruta (roFB) ---" << endl;
     cout << "Numero de tablones a procesar: " << miFinca.numeroDeTablones() << endl;
 
