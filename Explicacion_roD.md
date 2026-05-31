@@ -10,10 +10,12 @@ Sí. La implementación con **máscaras de bits** fue probada contra **fuerza br
 
 | Método | Costo mínimo (CR) | Programación óptima (π) |
 |--------|-------------------|-------------------------|
-| `roFB` | 160               | `< 1, 2, 3, 4, 0 >`   |
-| `roPD` | 160               | `< 1, 2, 3, 4, 0 >`   |
+| `roFB` | 20                | `< 2, 1, 0, 3, 4 >`   |
+| `roV`  | 20                | `< 2, 1, 0, 3, 4 >`   |
+| `roPD` | 20                | `< 2, 1, 0, 3, 4 >`   |
+| `roD`  | 20                | `< 2, 1, 0, 3, 4 >`   |
 
-Mismo costo y misma permutación → la DP encuentra la solución exacta en ese caso.
+Mismo costo y misma permutación en los 4 algoritmos → todos funcionan correctamente.
 
 ---
 
@@ -124,14 +126,14 @@ vector<int>    choice(1 << n);   // choice[mask] = próximo tablón óptimo
 
 4. (Opcional) Probar con archivos pequeños (3–7 tablones) y repetir la comparación.
 
-**Resultado esperado con `finca.txt` actual:** costo `160`, permutación `< 1, 2, 3, 4, 0 >`.
+**Resultado esperado con `finca.txt` actual:** costo `20`, permutación `< 2, 1, 0, 3, 4 >`.
 
 ---
 
 ## 8. Límites y notas
 
 - **Tamaño:** `2^n` crece rápido; es viable para `n` pequeño (típico en prácticas de ADA).
-- **`roV`:** la versión voraz aún no está implementada en este proyecto.
+- **`roV`:** versión voraz implementada en el merge con la rama DAR. Usa el criterio `prioridad / (tr × ts)` para ordenar los tablones de mayor a menor valor voraz.
 - **Documentación formal:** ver `Descomposicion.md` para la recurrencia matemática y la tabla de funciones.
 
 ---

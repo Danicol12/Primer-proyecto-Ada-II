@@ -1,7 +1,6 @@
 #ifndef TABLON_H
 #define TABLON_H
 
-#include <iostream>
 
 class Tablon {
 private:

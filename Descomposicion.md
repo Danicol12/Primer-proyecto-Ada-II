@@ -133,11 +133,13 @@ Equivale al espacio de búsqueda de fuerza bruta, pero sin repetir el mismo subc
 
 ## 10. Validación
 
-Para `finca.txt` (5 tablones):
+Para `finca.txt` (5 tablones del PDF):
 
 | Método | Costo mínimo | Permutación óptima      |
 |--------|--------------|-------------------------|
-| `roFB` | 160          | `< 1, 2, 3, 4, 0 >`   |
-| `roPD` | 160          | `< 1, 2, 3, 4, 0 >`   |
+| `roFB` | 20           | `< 2, 1, 0, 3, 4 >`   |
+| `roV`  | 20           | `< 2, 1, 0, 3, 4 >`   |
+| `roPD` | 20           | `< 2, 1, 0, 3, 4 >`   |
+| `roD`  | 20           | `< 2, 1, 0, 3, 4 >`   |
 
-Si coinciden costo y permutación con fuerza bruta en varias entradas pequeñas, la DP está correcta.
+Si coinciden costo y permutación con fuerza bruta en varias entradas pequeñas, la DP está correcta. En este caso particular el voraz (`roV`) también encuentra la solución óptima.

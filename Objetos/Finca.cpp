@@ -1,5 +1,6 @@
 #include "Finca.h"
 #include <algorithm>
+#include <utility>
 
 
 Finca::Finca(vector<Tablon> tablones) {
@@ -17,7 +18,7 @@ Tablon Finca::getTablon(int indice) {
 int Finca::calcularCostoDeProgramacion(const vector<int>& permutacion){
     int costoAcum=0;
     int tiempo=0;
-    for(int i=0; i<permutacion.size();i++){
+    for(size_t i=0; i<permutacion.size();i++){
         costoAcum += tablones[permutacion[i]].calcularCosto(tiempo);
         tiempo = tiempo+tablones[permutacion[i]].getTiempoDeRegado();
 
@@ -38,7 +39,7 @@ void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual
         return;
     }
 
-    for(int i = 0; i < indicesDisponibles.size(); i++){
+    for(size_t i = 0; i < indicesDisponibles.size(); i++){
         // Seguimos con la recursión pero pasando las variables de "el mejor"
         permutaciones(eliminarElemento(indicesDisponibles, i), 
                      agregarElemento(permActual, indicesDisponibles[i]), 

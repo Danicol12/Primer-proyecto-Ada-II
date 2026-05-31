@@ -1,5 +1,4 @@
 #include "Tablon.h"
-#include <iostream>
 
 
 Tablon::Tablon(int tiempo_de_Supervivencia, int tiempo_de_Regado, int prioridad, int tiempo_de_Riego_Perfecto) {

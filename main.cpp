@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <fstream>
+#include <string>
 #include "Objetos/Finca.h"
+using namespace std;
 
 
 
@@ -18,21 +19,34 @@ int main() {
     // 2. Inicializamos la Finca con estos tablones
     Finca miFinca(listaTablones);
 
-    cout << "--- Iniciando prueba de Fuerza Bruta (roFB) ---" << endl;
-    cout << "Numero de tablones a procesar: " << miFinca.numeroDeTablones() << endl;
+    auto print_result = [&](const string& name, const pair<vector<int>, double>& r){
+        cout << "--- " << name << " ---" << endl;
+        cout << "Costo: " << r.second << endl;
+        cout << "Permutacion: < ";
+        for(size_t i=0;i<r.first.size();i++){
+            cout << r.first[i] << (i+1==r.first.size()?"":" , ");
+        }
+        cout << " >\n\n";
+    };
 
-    // 3. Ejecutamos el algoritmo de Fuerza Bruta
-    pair<vector<int>, double> resultado = miFinca.roFB();
+    cout << "Numero de tablones: " << miFinca.numeroDeTablones() << "\n\n";
 
-    // 4. Mostramos los resultados
-    cout << "\nRESULTADO OPTIMO ENCONTRADO:" << endl;
-    cout << "Costo Minimo (CR): " << resultado.second << endl;
-    
-    cout << "Programacion Optima (Pi): < ";
-    for (int i = 0; i < resultado.first.size(); i++) {
-        cout << resultado.first[i] << (i == resultado.first.size() - 1 ? "" : ", ");
-    }
-    cout << " >" << endl;
+    // Ejecutar los 4 algoritmos y mostrar resultados
+    auto resFB = miFinca.roFB();
+    print_result("Fuerza Bruta (roFB)", resFB);
+
+    auto resV = miFinca.roV();
+    print_result("Voraz (roV)", resV);
+
+    auto resPD = miFinca.roPD();
+    print_result("Programacion Dinamica (roPD)", resPD);
+
+    auto resD = miFinca.roD();
+    print_result("roD (wrapper)", resD);
+
+    // Comparacion rápida
+    cout << "Resumen comparativo de costos:\n";
+    cout << "  roFB: " << resFB.second << " | roV: " << resV.second << " | roPD: " << resPD.second << " | roD: " << resD.second << "\n";
 
     return 0;
 }
