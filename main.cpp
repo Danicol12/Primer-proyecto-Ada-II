@@ -7,11 +7,11 @@ using namespace std;
 
 int main() {
     vector<Tablon> listaTablones;
-listaTablones.push_back(Tablon(7, 2, 3, 0));  // T0
-listaTablones.push_back(Tablon(5, 2, 4, 1));  // T1
-listaTablones.push_back(Tablon(3, 1, 2, 0));  // T2
-listaTablones.push_back(Tablon(9, 3, 1, 5));  // T3
-listaTablones.push_back(Tablon(12, 4, 2, 6)); // T4
+    listaTablones.push_back(Tablon(7, 2, 3, 0));  // T0
+    listaTablones.push_back(Tablon(5, 2, 4, 1));  // T1
+    listaTablones.push_back(Tablon(3, 1, 2, 0));  // T2
+    listaTablones.push_back(Tablon(9, 3, 1, 5));  // T3
+    listaTablones.push_back(Tablon(12, 4, 2, 6)); // T4
 
     Finca miFinca(listaTablones);
 
@@ -23,7 +23,6 @@ listaTablones.push_back(Tablon(12, 4, 2, 6)); // T4
 
     cout << "\nRESULTADO OPTIMO ENCONTRADO:" << endl;
     cout << "Costo Minimo (CR): " << resultado.second << endl;
-    
     cout << "Programacion Optima (Pi): < ";
     for (int i = 0; i < resultado.first.size(); i++) {
         cout << resultado.first[i] << (i == resultado.first.size() - 1 ? "" : ", ");
@@ -36,10 +35,21 @@ listaTablones.push_back(Tablon(12, 4, 2, 6)); // T4
 
     cout << "\nRESULTADO VORAZ ENCONTRADO:" << endl;
     cout << "Costo (CR): " << resultadoV.second << endl;
-
     cout << "Programacion Voraz (Pi): < ";
     for (int i = 0; i < resultadoV.first.size(); i++) {
         cout << resultadoV.first[i] << (i == resultadoV.first.size() - 1 ? "" : ", ");
+    }
+    cout << " >" << endl;
+
+    cout << "\n--- Iniciando prueba Peor caso (roFB_peor) ---" << endl;
+
+    pair<vector<int>, double> resultadoPeor = miFinca.roFB_peor();
+
+    cout << "\nPEOR RESULTADO ENCONTRADO:" << endl;
+    cout << "Costo Maximo (CR): " << resultadoPeor.second << endl;
+    cout << "Programacion Peor (Pi): < ";
+    for (int i = 0; i < resultadoPeor.first.size(); i++) {
+        cout << resultadoPeor.first[i] << (i == resultadoPeor.first.size() - 1 ? "" : ", ");
     }
     cout << " >" << endl;
 

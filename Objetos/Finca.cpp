@@ -25,13 +25,11 @@ int Finca::calcularCostoDeProgramacion(const vector<int>& permutacion){
     return costoAcum;
 }
 
-void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual, double& mejorCosto, vector<int>& mejorPermutacion){
-    // Caso base: se armó una permutación completa
+void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual, double& mejorCosto, vector<int>& mejorPermutacion, bool buscarMinimo){
     if(indicesDisponibles.size() == 0){
         double costoActual = calcularCostoDeProgramacion(permActual);
         
-        // Si es el primero que calculamos o es mejor que el anterior, lo guardamos
-        if(mejorCosto == -1 || costoActual < mejorCosto){
+        if(mejorCosto == -1 || (buscarMinimo ? costoActual < mejorCosto : costoActual > mejorCosto)){
             mejorCosto = costoActual;
             mejorPermutacion = permActual;
         }
@@ -39,10 +37,9 @@ void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual
     }
 
     for(int i = 0; i < indicesDisponibles.size(); i++){
-        // Seguimos con la recursión pero pasando las variables de "el mejor"
         permutaciones(eliminarElemento(indicesDisponibles, i), 
                      agregarElemento(permActual, indicesDisponibles[i]), 
-                     mejorCosto, mejorPermutacion);
+                     mejorCosto, mejorPermutacion, buscarMinimo);
     }
 }
 
@@ -56,18 +53,29 @@ vector<int> Finca::eliminarElemento(vector<int> arreglo, int indice){
     return arreglo;
 
 }
+
+ 
 pair<vector<int>, double> Finca::roFB(){
     vector<int> indices(numeroDeTablones());
     for (int i = 0; i < numeroDeTablones(); i++) indices[i] = i;
-
-    double mejorCosto = -1; // -1 indica que no se ha calculado nada
+    double mejorCosto = -1;
     vector<int> mejorPermutacion;
 
-    // Llamamos a la recursión. Ella se encarga de comparar y no guarda nada en listas grandes.
-    permutaciones(indices, {}, mejorCosto, mejorPermutacion);
-
+    // Llamamos a la recursión. Ella se encarga de comparar y no guarda nada en listas grandes y agregé el true para vel lo de mejor o peor.
+    permutaciones(indices, {}, mejorCosto, mejorPermutacion, true);
     return {mejorPermutacion, mejorCosto};
 }
+
+pair<vector<int>, double> Finca::roFB_peor(){
+    vector<int> indices(numeroDeTablones());
+    for (int i = 0; i < numeroDeTablones(); i++) indices[i] = i;
+    double peorCosto = -1;
+    vector<int> peorPermutacion;
+    permutaciones(indices, {}, peorCosto, peorPermutacion, false);
+    return {peorPermutacion, peorCosto};
+}
+
+
 pair<vector<int>, double> Finca::roV(){
     vector<int> permutacion = ordenarPorCriterioVoraz();
     double costo = calcularCostoDeProgramacion(permutacion);
