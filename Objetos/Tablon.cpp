@@ -24,22 +24,22 @@ void Tablon::setTiempoDeRiegoPerfecto(int tiempo_de_Riego_Perfecto) {
     this->tiempo_de_Riego_Perfecto = tiempo_de_Riego_Perfecto;
 }
 
-int Tablon::getTiempoDeSupervivencia() {
+int Tablon::getTiempoDeSupervivencia() const {
     return this->tiempo_de_Supervivencia;
 }
 
-int Tablon::getTiempoDeRegado() {
+int Tablon::getTiempoDeRegado() const {
     return this->tiempo_de_Regado;
 }
 
-int Tablon::getPrioridad() {
+int Tablon::getPrioridad() const {
     return this->prioridad;
 }
 
-int Tablon::getTiempoDeRiegoPerfecto() {
+int Tablon::getTiempoDeRiegoPerfecto() const {
     return this->tiempo_de_Riego_Perfecto;
 }
-int Tablon::calcularCosto(int tiempo){
+int Tablon::calcularCosto(int tiempo) const {
     int costo=0;
     if(getTiempoDeRiegoPerfecto()==tiempo){
         costo = getTiempoDeSupervivencia()-(tiempo+getTiempoDeRegado());
@@ -54,7 +54,7 @@ int Tablon::calcularCosto(int tiempo){
 
 }
 
-double Tablon::valorVoraz(){
+double Tablon::valorVoraz() const {
 
     return (double)getPrioridad() / ((double)getTiempoDeRegado() * (double)getTiempoDeSupervivencia());
 }

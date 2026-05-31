@@ -17,12 +17,12 @@ public:
     void setPrioridad(int prioridad);
     void setTiempoDeRiegoPerfecto(int tiempo_de_Riego_Perfecto);
 
-    int getTiempoDeSupervivencia();
-    int getTiempoDeRegado();
-    int getPrioridad();
-    int getTiempoDeRiegoPerfecto();
-    int calcularCosto(int tiempo);
-    double valorVoraz();
+    int getTiempoDeSupervivencia() const;
+    int getTiempoDeRegado() const;
+    int getPrioridad() const;
+    int getTiempoDeRiegoPerfecto() const;
+    int calcularCosto(int tiempo) const;
+    double valorVoraz() const;
 };
 
 #endif
