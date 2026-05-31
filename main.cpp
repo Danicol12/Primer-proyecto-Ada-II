@@ -7,49 +7,32 @@
 
 
 int main() {
-    std::vector<Tablon> tablones;
+    // 1. Creamos los tablones del ejemplo del PDF: <ts, tr, p, ro>
+    vector<Tablon> listaTablones;
+    listaTablones.push_back(Tablon(10, 3, 4, 0)); // T0
+    listaTablones.push_back(Tablon(6, 3, 3, 1));  // T1
+    listaTablones.push_back(Tablon(2, 2, 1, 0));  // T2
+    listaTablones.push_back(Tablon(8, 1, 1, 6));  // T3
+    listaTablones.push_back(Tablon(10, 4, 2, 5)); // T4
 
-    //Abrir el archivo txt
-    std::ifstream archivo("finca.txt");
+    // 2. Inicializamos la Finca con estos tablones
+    Finca miFinca(listaTablones);
 
-    //Verificar que el archivo se abrio correctamente
-    if (!archivo.is_open()) {
-        std::cout << "Error: No se pudo abrir el archivo" << std::endl;
-        return 1;
+    cout << "--- Iniciando prueba de Fuerza Bruta (roFB) ---" << endl;
+    cout << "Numero de tablones a procesar: " << miFinca.numeroDeTablones() << endl;
+
+    // 3. Ejecutamos el algoritmo de Fuerza Bruta
+    pair<vector<int>, double> resultado = miFinca.roFB();
+
+    // 4. Mostramos los resultados
+    cout << "\nRESULTADO OPTIMO ENCONTRADO:" << endl;
+    cout << "Costo Minimo (CR): " << resultado.second << endl;
+    
+    cout << "Programacion Optima (Pi): < ";
+    for (int i = 0; i < resultado.first.size(); i++) {
+        cout << resultado.first[i] << (i == resultado.first.size() - 1 ? "" : ", ");
     }
-
-    //Creación De tablón para guardar los datos de la finca
-    int ts, tr, p, rp;
-
-    //Leer los datos del txt
-    while (archivo >> ts >> tr >> p >> rp) {
-        tablones.emplace_back(ts, tr, p, rp);
-    }
-
-    //Cerrar el archivo
-    archivo.close();
-
-    Finca finca(tablones);
-
-    //Imprimir los datos de la finca
-    for (int i = 0; i < finca.numeroDeTablones(); i++) {
-        Tablon t = finca.getTablon(i);
-        std::cout << "ts: " << t.getTiempoDeSupervivencia()
-                  << " tr: " << t.getTiempoDeRegado()
-                  << " p: " << t.getPrioridad()
-                  << " rp: " << t.getTiempoDeRiegoPerfecto() << std::endl;
-    }
-
-    // Solución con Programación Dinámica (máscaras de bits)
-    std::cout << "\n--- Iniciando prueba de Programacion Dinamica (roPD) ---" << std::endl;
-    auto resultadoPD = finca.roPD();
-    std::cout << "Costo Minimo (CR): " << resultadoPD.second << std::endl;
-    std::cout << "Programacion Optima (Pi): < ";
-    for (size_t i = 0; i < resultadoPD.first.size(); i++) {
-        std::cout << resultadoPD.first[i]
-                  << (i + 1 == resultadoPD.first.size() ? "" : ", ");
-    }
-    std::cout << " >" << std::endl;
+    cout << " >" << endl;
 
     return 0;
 }
