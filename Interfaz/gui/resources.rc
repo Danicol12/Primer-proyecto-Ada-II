@@ -1,0 +1,4 @@
+#include <winuser.h>
+
+/* Visual Styles manifest for Windows Common Controls v6 */
+1 RT_MANIFEST "gui.exe.manifest"

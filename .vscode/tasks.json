@@ -1,29 +1,103 @@
 {
-    "version": "2.0.0", // <--- AGREGA ESTA LÍNEA
+    "version": "2.0.0",
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "Compilar Todo el Proyecto",
+            "label": "Compilar Core (main.exe)",
             "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
-    "-fdiagnostics-color=always",
-    "-g",
-    "${fileDirname}/*.cpp",         // Compila main.cpp
-    "${fileDirname}/Objetos/*.cpp", // Compila Tablon.cpp que está adentro
-    "-o",
-    "${fileDirname}/${fileBasenameNoExtension}.exe"
-],
-            "options": {
-                "cwd": "C:\\msys64\\ucrt64\\bin"
-            },
-            "problemMatcher": [
-                "$gcc"
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "main.cpp",
+                "Objetos/Finca.cpp",
+                "Objetos/Tablon.cpp",
+                "-o",
+                "main.exe"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "Tarea para compilar múltiples archivos cpp"
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$gcc"],
+            "group": { "kind": "build", "isDefault": true },
+            "detail": "Compila el core sin interfaz"
+        },
+        {
+            "type": "cppbuild",
+            "label": "Compilar Interfaz CONSOLA",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "Interfaz/consola/main.cpp",
+                "Objetos/Finca.cpp",
+                "Objetos/Tablon.cpp",
+                "-o",
+                "main_consola.exe"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$gcc"],
+            "group": "build",
+            "detail": "Compila la interfaz de terminal"
+        },
+        {
+            "type": "cppbuild",
+            "label": "Compilar Interfaz GUI (Win32)",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "Interfaz/gui/gui.cpp",
+                "Interfaz/gui/resources.res",
+                "Objetos/Finca.cpp",
+                "Objetos/Tablon.cpp",
+                "-o",
+                "main_gui.exe",
+                "-lcomctl32",
+                "-lcomdlg32",
+                "-mwindows"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "dependsOn": ["Compilar recursos GUI"],
+            "problemMatcher": ["$gcc"],
+            "group": "build",
+            "detail": "Compila la interfaz grafica (Win32)"
+        },
+        {
+            "type": "cppbuild",
+            "label": "Compilar Servidor Web",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-Wextra",
+                "Interfaz/web/server.cpp",
+                "Objetos/Finca.cpp",
+                "Objetos/Tablon.cpp",
+                "-o",
+                "riego.exe",
+                "-lws2_32"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$gcc"],
+            "group": "build",
+            "detail": "Compila el servidor HTTP (interfaz web moderna)"
+        },
+        {
+            "type": "shell",
+            "label": "Compilar recursos GUI",
+            "command": "windres",
+            "args": [
+                "Interfaz/gui/resources.rc",
+                "-O",
+                "coff",
+                "-o",
+                "Interfaz/gui/resources.res"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": [],
+            "group": "build",
+            "detail": "Compila el recurso .rc (manifest) para la GUI"
         }
     ]
 }
