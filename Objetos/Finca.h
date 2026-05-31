@@ -18,7 +18,13 @@ public:
     vector<int> agregarElemento(vector<int>,int);
     vector<int> eliminarElemento(vector<int>,int);
     pair<vector<int>, double> roFB(); 
-    pair<vector<int>, double> roV();  
+
+
+
+    pair<vector<int>, double> roV();
+    vector<int> ordenarPorCriterioVoraz();
+    
+
     pair<vector<int>, double> roPD();
     
     int numeroDeTablones();

@@ -1,9 +1,10 @@
 #include "Finca.h"
+#include <algorithm>
 
 
 Finca::Finca(vector<Tablon> tablones) {
     this->tablones = tablones;
-}
+}                       
 
 int Finca::numeroDeTablones() {
     return this->tablones.size();
@@ -67,8 +68,27 @@ pair<vector<int>, double> Finca::roFB(){
 
     return {mejorPermutacion, mejorCosto};
 }
-/*
 pair<vector<int>, double> Finca::roV(){
+    vector<int> permutacion = ordenarPorCriterioVoraz();
+    double costo = calcularCostoDeProgramacion(permutacion);
+    return {permutacion, costo};
+}
 
+vector<int> Finca::ordenarPorCriterioVoraz(){
+    vector<pair<int,double>> criterios(numeroDeTablones());
     
-}*/
+    for(int i = 0; i < numeroDeTablones(); i++){
+        criterios[i] = {i, getTablon(i).valorVoraz()};
+    }
+    
+    sort(criterios.begin(), criterios.end(), [](const pair<int,double>& a, const pair<int,double>& b){
+        return a.second > b.second;
+    });
+    
+    vector<int> permutacion(numeroDeTablones());
+    for(int i = 0; i < numeroDeTablones(); i++){
+        permutacion[i] = criterios[i].first;
+    }
+    
+    return permutacion;
+}

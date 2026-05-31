@@ -38,3 +38,8 @@ int Tablon::calcularCosto(int tiempo){
     return costo;
 
 }
+
+double Tablon::valorVoraz(){
+
+    return (double)getPrioridad() / ((double)getTiempoDeRegado() * (double)getTiempoDeSupervivencia());
+}

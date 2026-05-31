@@ -19,6 +19,7 @@ public:
     int getPrioridad();
     int getTiempoDeRiegoPerfecto();
     int calcularCosto(int);
+    double valorVoraz();
 };
 
 #endif 
