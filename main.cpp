@@ -3,28 +3,6 @@
 #include <fstream>
 #include "Objetos/Finca.h"
 
-//Función de costo 
-
-//Función que se encarga de explorar las rutas posibles 
-
-void fuerzaBruta(Finca& miFinca) {
-    std::cout << "--- Iniciando prueba de Fuerza Bruta (roFB) ---" << std::endl;
-    std::cout << "Numero de tablones a procesar: " << miFinca.numeroDeTablones() << std::endl;
-
-    // 3. Ejecutamos el algoritmo de Fuerza Bruta
-    auto resultado = miFinca.roFB();
-
-    // 4. Mostramos los resultados
-    std::cout << "\nRESULTADO OPTIMO ENCONTRADO:" << std::endl;
-    std::cout << "Costo Minimo (CR): " << resultado.second << std::endl;
-
-    std::cout << "Programacion Optima (Pi): < ";
-    for (size_t i = 0; i < resultado.first.size(); i++) {
-        std::cout << resultado.first[i]
-                  << (i + 1 == resultado.first.size() ? "" : ", ");
-    }
-    std::cout << " >" << std::endl;
-}
 
 
 
@@ -61,8 +39,6 @@ int main() {
                   << " p: " << t.getPrioridad()
                   << " rp: " << t.getTiempoDeRiegoPerfecto() << std::endl;
     }
-
-    fuerzaBruta(finca);
 
     // Solución con Programación Dinámica (máscaras de bits)
     std::cout << "\n--- Iniciando prueba de Programacion Dinamica (roPD) ---" << std::endl;
