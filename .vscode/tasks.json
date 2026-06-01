@@ -64,26 +64,6 @@
             "detail": "Compila la interfaz grafica (Win32)"
         },
         {
-            "type": "cppbuild",
-            "label": "Compilar Servidor Web",
-            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
-            "args": [
-                "-std=c++17",
-                "-Wall",
-                "-Wextra",
-                "Interfaz/web/server.cpp",
-                "Objetos/Finca.cpp",
-                "Objetos/Tablon.cpp",
-                "-o",
-                "riego.exe",
-                "-lws2_32"
-            ],
-            "options": { "cwd": "${workspaceFolder}" },
-            "problemMatcher": ["$gcc"],
-            "group": "build",
-            "detail": "Compila el servidor HTTP (interfaz web moderna)"
-        },
-        {
             "type": "shell",
             "label": "Compilar recursos GUI",
             "command": "windres",

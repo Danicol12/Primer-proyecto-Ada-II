@@ -28,7 +28,6 @@ using namespace std;
 #define ID_BTN_FB         1002
 #define ID_BTN_VORAZ      1003
 #define ID_BTN_PD         1004
-#define ID_BTN_TODOS      1005
 #define ID_BTN_RELOAD     1008
 
 #define ID_FILE_EXIT      2002
@@ -43,15 +42,14 @@ using namespace std;
 #define ID_RADIO_FB       4001
 #define ID_RADIO_VORAZ    4002
 #define ID_RADIO_PD       4003
-#define ID_RADIO_TODOS    4004
-#define ID_RADIO_PEOR     4005
+#define ID_RADIO_PEOR     4004
 
 // ─── Estado global ─────────────────────────────────────────
 vector<Tablon>  g_tablones;
 vector<pair<string, pair<vector<int>, double>>> g_resultados;
 string          g_archivoActual;      // Ruta completa del archivo seleccionado
 string          g_nombreArchivo;      // Solo el nombre base (sin extension)
-int             g_algoritmoSel = 0;   // 0=FB, 1=Voraz, 2=PD, 3=Todos, 4=Peor(FB)
+int             g_algoritmoSel = 0;   // 0=FB, 1=Voraz, 2=PD, 3=Peor(FB)
 
 HWND g_hListArchivos = NULL;
 HWND g_hListTablones = NULL;
@@ -119,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nShow) {
                              CLEARTYPE_QUALITY, FIXED_PITCH | FF_MODERN, "Consolas");
 
     HWND hwnd = CreateWindowEx(0, CLASS_NAME,
-        "Optimizacion de Riego — ADA II",
+        "Optimizacion de Riego ADA II",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 1100, 740,
         NULL, NULL, hInst, NULL);
@@ -229,10 +227,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             SetWindowPos(hLblAlg, NULL, rightX, algoY + 4, 80, 20, SWP_NOZORDER);
 
             // Radio buttons
-            const int radios[] = { ID_RADIO_FB, ID_RADIO_VORAZ, ID_RADIO_PD, ID_RADIO_TODOS, ID_RADIO_PEOR };
-            const int radioW   = 72;
+            const int radios[] = { ID_RADIO_FB, ID_RADIO_VORAZ, ID_RADIO_PD, ID_RADIO_PEOR };
+            const int radioW   = 80;
             int rx = rightX + 85;
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 4; i++) {
                 HWND hR = GetDlgItem(hwnd, radios[i]);
                 SetWindowPos(hR, NULL, rx, algoY + 2, radioW, 24, SWP_NOZORDER);
                 rx += radioW + 4;
@@ -290,7 +288,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         "  • Fuerza Bruta (FB) — O(n!)\n"
                         "  • Voraz           — O(n log n)\n"
                         "  • Prog. Dinamica  — O(n^2 * 2^n)\n"
-                        "  • Todos           — Ejecuta los tres\n\n"
+                        "  • Peor Costo      — FB buscando maximo\n\n"
                         "Los archivos de entrada van en:  Datos\\Entrantes\\\n"
                         "Los resultados se guardan en:    Datos\\Salidas\\",
                         "Acerca de", MB_OK | MB_ICONINFORMATION);
@@ -298,8 +296,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 case ID_RADIO_FB:    g_algoritmoSel = 0; break;
                 case ID_RADIO_VORAZ: g_algoritmoSel = 1; break;
                 case ID_RADIO_PD:    g_algoritmoSel = 2; break;
-                case ID_RADIO_TODOS: g_algoritmoSel = 3; break;
-                case ID_RADIO_PEOR:  g_algoritmoSel = 4; break;
+                case ID_RADIO_PEOR:  g_algoritmoSel = 3; break;
                 case ID_BTN_RESOLVER: EjecutarAlgoritmo(hwnd); break;
             }
             break;
@@ -342,7 +339,7 @@ void CrearControles(HWND hwnd) {
 
     // ── Botón Recargar lista ──
     {
-        HWND h = CreateWindow("BUTTON", "↺ Recargar lista",
+        HWND h = CreateWindow("BUTTON", "Recargar lista",
             WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
             0, 0, 10, 10, hwnd, (HMENU)ID_BTN_RELOAD, g_hInst, NULL);
         SendMessage(h, WM_SETFONT, (WPARAM)g_hFontUI, TRUE);
@@ -382,7 +379,6 @@ void CrearControles(HWND hwnd) {
         { ID_RADIO_FB,    "FB",    WS_GROUP | BS_AUTORADIOBUTTON },
         { ID_RADIO_VORAZ, "Voraz", BS_AUTORADIOBUTTON },
         { ID_RADIO_PD,    "PD",    BS_AUTORADIOBUTTON },
-        { ID_RADIO_TODOS, "Todos", BS_AUTORADIOBUTTON },
         { ID_RADIO_PEOR,  "Peor",  BS_AUTORADIOBUTTON },
     };
     for (auto& r : radios) {
@@ -396,7 +392,7 @@ void CrearControles(HWND hwnd) {
 
     // ── Botón Resolver ──
     {
-        HWND h = CreateWindow("BUTTON", "▶  Resolver",
+        HWND h = CreateWindow("BUTTON", "Resolver",
             WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_DEFPUSHBUTTON,
             0, 0, 10, 10, hwnd, (HMENU)ID_BTN_RESOLVER, g_hInst, NULL);
         SendMessage(h, WM_SETFONT, (WPARAM)g_hFontUIBold, TRUE);
@@ -626,59 +622,18 @@ void EjecutarAlgoritmo(HWND hwnd) {
     AgregarResultado("", true);
     g_resultados.clear();
 
-    if (g_algoritmoSel == 3) {
-        // Todos los algoritmos
-        auto rFB = finca.roFB();
-        g_resultados.push_back({"FB",    rFB});
-        MostrarResultado("Fuerza Bruta (roFB)", rFB);
-        GuardarSalidaAutomatica(hwnd, "FB", rFB);
-
-        auto rV  = finca.roV();
-        g_resultados.push_back({"Voraz", rV});
-        MostrarResultado("Voraz (roV)", rV);
-        GuardarSalidaAutomatica(hwnd, "Voraz", rV);
-
-        auto rPD = finca.roPD();
-        g_resultados.push_back({"PD",    rPD});
-        MostrarResultado("Programacion Dinamica (roPD)", rPD);
-        GuardarSalidaAutomatica(hwnd, "PD", rPD);
-
-        // Resumen comparativo
-        string resumen = "========== RESUMEN COMPARATIVO ==========\r\n";
-        char buf[128];
-        for (auto& [nom, res] : g_resultados) {
-            snprintf(buf, sizeof(buf), "  %-10s  Costo: %.0f\r\n", nom.c_str(), res.second);
-            resumen += buf;
-        }
-        AgregarResultado(resumen);
-
-        // Verificar optimalidad FB vs PD
-        if (g_resultados.size() >= 2) {
-            double costoFB = g_resultados[0].second.second;
-            double costoPD = g_resultados[2].second.second;
-            double costoV  = g_resultados[1].second.second;
-            string check = "";
-            check += (costoFB == costoPD)
-                ? "[OK] FB y PD coinciden.\r\n"
-                : "[WARN] FB y PD NO coinciden. Revise la implementacion.\r\n";
-            check += (costoV == costoFB)
-                ? "[OK] Voraz tambien es optimo.\r\n"
-                : "[INFO] Voraz no es optimo para este caso.\r\n";
-            AgregarResultado(check);
-        }
-    } else {
-        pair<vector<int>, double> res;
-        string nombre, etiqueta;
-        switch (g_algoritmoSel) {
-            case 0: res = finca.roFB();      nombre = "FB";    etiqueta = "Fuerza Bruta (roFB)";      break;
-            case 1: res = finca.roV();       nombre = "Voraz"; etiqueta = "Voraz (roV)";              break;
-            case 2: res = finca.roPD();      nombre = "PD";    etiqueta = "Prog. Dinamica (roPD)";    break;
-            case 4: res = finca.roFB_peor(); nombre = "Peor";  etiqueta = "Peor Costo (roFB_peor)";  break;
-        }
-        g_resultados.push_back({nombre, res});
-        MostrarResultado(etiqueta, res);
-        GuardarSalidaAutomatica(hwnd, nombre, res);
+    pair<vector<int>, double> res;
+    string nombre, etiqueta;
+    switch (g_algoritmoSel) {
+        case 0: res = finca.roFB();      nombre = "FB";    etiqueta = "Fuerza Bruta (roFB)";     break;
+        case 1: res = finca.roV();       nombre = "Voraz"; etiqueta = "Voraz (roV)";             break;
+        case 2: res = finca.roPD();      nombre = "PD";    etiqueta = "Prog. Dinamica (roPD)";   break;
+        case 3: res = finca.roFB_peor(); nombre = "Peor";  etiqueta = "Peor Costo (roFB_peor)"; break;
+        default: return;
     }
+    g_resultados.push_back({nombre, res});
+    MostrarResultado(etiqueta, res);
+    GuardarSalidaAutomatica(hwnd, nombre, res);
 }
 
 
