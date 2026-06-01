@@ -17,11 +17,11 @@ public:
     Finca(vector<Tablon> tablones); 
 
     int calcularCostoDeProgramacion(const vector<int>& permutacion);
-    void permutaciones(vector<int>, vector<int>, double& , vector<int>& );
+    void permutaciones(vector<int>, vector<int>, double& , vector<int>&,bool );
     vector<int> agregarElemento(vector<int>,int);
     vector<int> eliminarElemento(vector<int>,int);
     pair<vector<int>, double> roFB(); 
-
+    pair<vector<int>, double> roFB_peor();
 
 
     pair<vector<int>, double> roV();
@@ -29,7 +29,7 @@ public:
     
 
     pair<vector<int>, double> roPD();
-    pair<vector<int>, double> roD();
+    
     
     int numeroDeTablones();
     

@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <utility>
 
-
 Finca::Finca(vector<Tablon> tablones) {
     this->tablones = tablones;
 }                       
@@ -21,78 +20,80 @@ int Finca::calcularCostoDeProgramacion(const vector<int>& permutacion){
     for(size_t i=0; i<permutacion.size();i++){
         costoAcum += tablones[permutacion[i]].calcularCosto(tiempo);
         tiempo = tiempo+tablones[permutacion[i]].getTiempoDeRegado();
-
     }
     return costoAcum;
 }
 
-void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual, double& mejorCosto, vector<int>& mejorPermutacion){
-    // Caso base: se armó una permutación completa
+// ===================== FUERZA BRUTA =====================
+
+vector<int> Finca::agregarElemento(vector<int> arreglo, int elemento){
+    arreglo.push_back(elemento);
+    return arreglo;
+}
+
+vector<int> Finca::eliminarElemento(vector<int> arreglo, int indice){
+    arreglo.erase(arreglo.begin()+ indice);
+    return arreglo;
+}
+
+void Finca::permutaciones(vector<int> indicesDisponibles, vector<int> permActual, double& mejorCosto, vector<int>& mejorPermutacion, bool buscarMinimo){
     if(indicesDisponibles.size() == 0){
         double costoActual = calcularCostoDeProgramacion(permActual);
-        
-        // Si es el primero que calculamos o es mejor que el anterior, lo guardamos
-        if(mejorCosto == -1 || costoActual < mejorCosto){
+        if(mejorCosto == -1 || (buscarMinimo ? costoActual < mejorCosto : costoActual > mejorCosto)){
             mejorCosto = costoActual;
             mejorPermutacion = permActual;
         }
         return;
     }
-
     for(size_t i = 0; i < indicesDisponibles.size(); i++){
-        // Seguimos con la recursión pero pasando las variables de "el mejor"
         permutaciones(eliminarElemento(indicesDisponibles, i), 
                      agregarElemento(permActual, indicesDisponibles[i]), 
-                     mejorCosto, mejorPermutacion);
+                     mejorCosto, mejorPermutacion, buscarMinimo);
     }
 }
 
-vector<int> Finca::agregarElemento(vector<int> arreglo, int elemento){
-    arreglo.push_back(elemento);
-    return arreglo;
-
-}
-vector<int> Finca::eliminarElemento(vector<int> arreglo, int indice){
-    arreglo.erase(arreglo.begin()+ indice);
-    return arreglo;
-
-}
 pair<vector<int>, double> Finca::roFB(){
     vector<int> indices(numeroDeTablones());
     for (int i = 0; i < numeroDeTablones(); i++) indices[i] = i;
-
-    double mejorCosto = -1; // -1 indica que no se ha calculado nada
+    double mejorCosto = -1;
     vector<int> mejorPermutacion;
-
-    // Llamamos a la recursión. Ella se encarga de comparar y no guarda nada en listas grandes.
-    permutaciones(indices, {}, mejorCosto, mejorPermutacion);
-
+    permutaciones(indices, {}, mejorCosto, mejorPermutacion, true);
     return {mejorPermutacion, mejorCosto};
 }
+
+pair<vector<int>, double> Finca::roFB_peor(){
+    vector<int> indices(numeroDeTablones());
+    for (int i = 0; i < numeroDeTablones(); i++) indices[i] = i;
+    double peorCosto = -1;
+    vector<int> peorPermutacion;
+    permutaciones(indices, {}, peorCosto, peorPermutacion, false);
+    return {peorPermutacion, peorCosto};
+}
+
+// ===================== VORAZ =====================
+
+vector<int> Finca::ordenarPorCriterioVoraz(){
+    vector<pair<int,double>> criterios(numeroDeTablones());
+    for(int i = 0; i < numeroDeTablones(); i++){
+        criterios[i] = {i, getTablon(i).valorVoraz()};
+    }
+    sort(criterios.begin(), criterios.end(), [](const pair<int,double>& a, const pair<int,double>& b){
+        return a.second > b.second;
+    });
+    vector<int> permutacion(numeroDeTablones());
+    for(int i = 0; i < numeroDeTablones(); i++){
+        permutacion[i] = criterios[i].first;
+    }
+    return permutacion;
+}
+
 pair<vector<int>, double> Finca::roV(){
     vector<int> permutacion = ordenarPorCriterioVoraz();
     double costo = calcularCostoDeProgramacion(permutacion);
     return {permutacion, costo};
 }
 
-vector<int> Finca::ordenarPorCriterioVoraz(){
-    vector<pair<int,double>> criterios(numeroDeTablones());
-    
-    for(int i = 0; i < numeroDeTablones(); i++){
-        criterios[i] = {i, getTablon(i).valorVoraz()};
-    }
-    
-    sort(criterios.begin(), criterios.end(), [](const pair<int,double>& a, const pair<int,double>& b){
-        return a.second > b.second;
-    });
-    
-    vector<int> permutacion(numeroDeTablones());
-    for(int i = 0; i < numeroDeTablones(); i++){
-        permutacion[i] = criterios[i].first;
-    }
-    
-    return permutacion;
-}
+// ===================== PROGRAMACION DINAMICA =====================
 
 int Finca::tiempoDesdeMascara(int mask) {
     int tiempo = 0;
@@ -145,8 +146,4 @@ pair<vector<int>, double> Finca::roPD() {
     }
 
     return {permutacion, costoMinimo};
-}
-
-pair<vector<int>, double> Finca::roD() {
-    return roPD();
 }
