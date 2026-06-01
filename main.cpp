@@ -52,12 +52,10 @@ int main() {
     auto resFB  = finca.roFB();
     auto resV   = finca.roV();
     auto resPD  = finca.roPD();
-    auto resD   = finca.roD();
 
     printResultado("Fuerza Bruta (roFB)", resFB);
     printResultado("Voraz (roV)",         resV);
     printResultado("PD (roPD)",           resPD);
-    printResultado("roD (wrapper)",       resD);
 
     cout << "\nOptimalidad: "
          << (resFB.second == resPD.second ? "OK" : "ERROR")
