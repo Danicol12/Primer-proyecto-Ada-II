@@ -19,6 +19,7 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 #include "../../Objetos/Finca.h"
 
 using namespace std;
@@ -609,6 +610,12 @@ void GuardarSalidaAutomatica(HWND hwnd, const string& nombre,
 }
 
 // ─── Ejecutar algoritmo seleccionado ──────────────────────
+// El tiempo se mide con std::chrono::high_resolution_clock.
+// Se captura t0 justo antes de llamar al algoritmo y t1 justo
+// despues; la diferencia da la duracion exacta de calculo.
+// El tiempo se muestra en el panel de resultados pero NO se
+// escribe en los archivos de salida (GuardarSalidaAutomatica
+// recibe el resultado sin informacion de tiempo).
 void EjecutarAlgoritmo(HWND hwnd) {
     if (g_tablones.empty()) {
         MessageBoxA(hwnd, "Seleccione un archivo de entrada primero.",
@@ -622,8 +629,13 @@ void EjecutarAlgoritmo(HWND hwnd) {
     AgregarResultado("", true);
     g_resultados.clear();
 
+    using Clock = chrono::high_resolution_clock;
+
     pair<vector<int>, double> res;
     string nombre, etiqueta;
+
+    // ── Medicion de tiempo: t0 = inicio, t1 = fin del algoritmo ──
+    auto t0 = Clock::now();
     switch (g_algoritmoSel) {
         case 0: res = finca.roFB();      nombre = "FB";    etiqueta = "Fuerza Bruta (roFB)";     break;
         case 1: res = finca.roV();       nombre = "Voraz"; etiqueta = "Voraz (roV)";             break;
@@ -631,8 +643,33 @@ void EjecutarAlgoritmo(HWND hwnd) {
         case 3: res = finca.roFB_peor(); nombre = "Peor";  etiqueta = "Peor Costo (roFB_peor)"; break;
         default: return;
     }
+    auto t1 = Clock::now();
+    // ─────────────────────────────────────────────────────────
+
+    // Calcular duracion en microsegundos
+    long long us = chrono::duration_cast<chrono::microseconds>(t1 - t0).count();
+
+    // Mostrar resultado (costo + orden) en el panel
     g_resultados.push_back({nombre, res});
     MostrarResultado(etiqueta, res);
+
+    // Mostrar tiempo de ejecucion (solo en pantalla, no en archivo)
+    char timeBuf[128];
+    if (us < 1000) {
+        snprintf(timeBuf, sizeof(timeBuf),
+            "  Tiempo de ejecucion: %lld us\r\n\r\n", us);
+    } else if (us < 1000000) {
+        snprintf(timeBuf, sizeof(timeBuf),
+            "  Tiempo de ejecucion: %.3f ms  (%lld us)\r\n\r\n",
+            us / 1000.0, us);
+    } else {
+        snprintf(timeBuf, sizeof(timeBuf),
+            "  Tiempo de ejecucion: %.3f s  (%lld us)\r\n\r\n",
+            us / 1000000.0, us);
+    }
+    AgregarResultado(timeBuf);
+
+    // Guardar resultado en archivo (sin el tiempo)
     GuardarSalidaAutomatica(hwnd, nombre, res);
 }
 
